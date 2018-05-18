@@ -8,12 +8,6 @@ public class BMT {
     private String[][] myBMTTable = null;
     private String compare = null;
 
-    public static void main(String[] args) {
-        BMT bmt = new BMT();
-        bmt.constructBMT("HI");
-        bmt.find("ABJAEFGHIJKJAVA");
-    }
-
     /*
      * @param input     Takes in the word to create a BMT on. Best used at the start of the program due to complexity.
      */
@@ -36,7 +30,6 @@ public class BMT {
         Map<Character, Integer> myMap = calculateOccurences(input);
         // let k move the through the processed array
         for(int k = 0; k < processedArray.length; k++) {
-            System.out.println("Processing " + processedArray[k]);
             // case, were the last character in input
             if(input.lastIndexOf(processedArray[k]) == input.length() - 1) {
                 // we don't have any duplicates
@@ -61,11 +54,6 @@ public class BMT {
                     } else
                         System.err.println("Error! " + processedArray[k] + " doesn't exist?");
             }
-        }
-
-        // lets see myBMT
-        for(i = 0; i < myBMTTable[0].length; i++) {
-            System.out.println(myBMTTable[0][i] + "->" + myBMTTable[1][i]);
         }
 
     }
@@ -96,25 +84,25 @@ public class BMT {
         int pos = compare.length();
         int current = 0;
         do {
-            pos = compareStrings(input.substring(current, pos), compare);
-            System.out.println("Pos found " + pos + " test " + current);
-            // does it contain? If so we'll use that numerical value
-            List<String> tmpList = Arrays.asList(myBMTTable[0]);
-            if(pos != -1) {
-                System.out.println("Comparing Pos: " + pos + ", Current: " + current + "\nSubstring: " + input.substring(current, (current + compare.length())).charAt(pos) + "\n----------------------------");
-                if (tmpList.contains("" + input.substring(current, (current + compare.length())).charAt(pos))) {
-                    System.out.println("Stage Contains: Incrementing Current by : " + Integer.parseInt(myBMTTable[1][tmpList.indexOf("" + input.substring(current, (current + compare.length())).charAt(pos))]) + " and Pos by : " + (pos + current));
-                    current += Integer.parseInt(myBMTTable[1][tmpList.indexOf("" + input.substring(current, (current + compare.length())).charAt(pos))]);
-                    pos = compare.length() + current;
-                } else {
-                    System.out.println("Stage Doesn't Contain: Incrementing Current by Wildcard (aka Compare.length()): " + compare.length());
-                    current += compare.length();
-                    pos = compare.length() + current;
+            try {
+                pos = compareStrings(input.substring(current, pos), compare);
+                // does it contain? If so we'll use that numerical value
+                List<String> tmpList = Arrays.asList(myBMTTable[0]);
+                if (pos != -1) {
+                    if (tmpList.contains("" + input.substring(current, (current + compare.length())).charAt(pos))) {
+                        current += Integer.parseInt(myBMTTable[1][tmpList.indexOf("" + input.substring(current, (current + compare.length())).charAt(pos))]);
+                        pos = compare.length() + current;
+                    } else {
+                        // regex, move length
+                        current += compare.length();
+                        pos = compare.length() + current;
+                    }
                 }
-                System.out.println("----------------------------");
+            } catch (Exception e) {
+                return -1;
             }
         } while (pos > -1);
-        return -1;
+        return current;
     }
 
     /*
@@ -122,8 +110,7 @@ public class BMT {
      * @param y is the sub string
      * @return Method returns -1 for found else the index of a nonmatching character.
      */
-    public int compareStrings(String x, String y) {
-        System.out.println(x + " " + y);
+    private int compareStrings(String x, String y) {
         for (int start = y.length() - 1, i = start; i >= 0; i--) {
             if (y.charAt(i) != x.charAt(i)) {
                 return i;

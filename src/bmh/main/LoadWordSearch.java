@@ -7,8 +7,11 @@ import java.util.regex.Pattern;
 
 public class LoadWordSearch {
 
-    public String[][] readIn(File dataFile) {
-        String myMatrix[][] = null;
+    /*
+     * @param dataFile   Datafile should be in the format, n comments followed by n m rows and columns and lastly the word search
+     */
+    public String[][] readInWordSearch(File dataFile) {
+        String[][] myMatrix = null;
         try {
             // the datafile takes to cnf format
             Pattern p = Pattern.compile("c");
@@ -29,6 +32,29 @@ public class LoadWordSearch {
             e.printStackTrace();
         }
         return myMatrix;
+    }
+
+    /*
+     * @param dateFile  Datefile should be in the format of cnf, n comments followed by how many words following that, those number of words.
+     */
+    public String[] readInSearchWords(File dataFile) {
+        String[] myWords = null;
+        try {
+            // the datafile takes to cnf format
+            Pattern p = Pattern.compile("c");
+            Scanner scan = new Scanner(dataFile);
+            while(scan.hasNext(p));
+            myWords = new String[scan.nextInt()];
+            int count = 0;
+            scan.nextLine();
+            while(scan.hasNext()) {
+               myWords[count] = scan.nextLine();
+               count++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return myWords;
     }
 
 }
